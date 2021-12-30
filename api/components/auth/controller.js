@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const auth = require("../../../auth");
+const error = require("../../../utils/error");
 const TABLE = "auth";
 
 module.exports = function (injectedStore) {
@@ -8,13 +9,14 @@ module.exports = function (injectedStore) {
     store = require("../../../store/dummy.js");
   }
   async function login(username, password) {
-    const data = await store.query(TABLE, { username: username });
+    const response = await store.query(TABLE, { username });
+    const data = response[0];
     return bcrypt.compare(password, data.password).then((sonIguales) => {
-      if (sonIguales === true) {
+      if (sonIguales) {
         //GENERA TOKEN
         return auth.sign(data);
       } else {
-        throw new Error("Información inválida");
+        throw error("No puedes hacer esto", 500);
       }
     });
   }

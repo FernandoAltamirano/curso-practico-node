@@ -1,33 +1,33 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config");
+const error = require("../utils/error");
 const secret = config.jwt.secret;
-function sign(data) {
-  return jwt.sign(data, secret);
-}
 
 const check = {
   own: function (req, owner) {
     const decoded = decodeHeader(req);
-    console.log(decoded);
     //CPMPROBAR SI ES O NO  PROPIO
     if (decoded.id !== owner) {
-      throw new Error("No puedes editar");
+      throw error("No puedes editar", 401);
     }
     return true;
   },
 };
 
+function sign(data) {
+  return jwt.sign(data, secret);
+}
 function verify(token) {
   return jwt.verify(token, secret);
 }
 function getToken(auth) {
   if (!auth) {
-    throw new Error("No viene token");
+    throw error("No hay token", 400);
   }
-  if (auth.indexOf("Bearer " === -1)) {
-    throw new Error("Formato invalido");
+  if (!auth.startsWith("Bearer")) {
+    throw error("Formato invalido", 400);
   }
-  let token = auth.replace("Bearer ", "");
+  const token = auth.replace("Bearer ", "");
   return token;
 }
 function decodeHeader(req) {

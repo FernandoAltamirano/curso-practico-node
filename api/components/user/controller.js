@@ -1,7 +1,7 @@
 const nanoid = require("nanoid");
 const auth = require("../auth/index.js");
 
-const TABLE = "user";
+const TABLE = "users";
 
 module.exports = function (injectedStore) {
   let store = injectedStore;
@@ -11,20 +11,23 @@ module.exports = function (injectedStore) {
   function list() {
     return store.list(TABLE);
   }
-  function get(id) {
+  function get(TABLE, id) {
     return store.get(TABLE, id);
   }
-  async function upsert(body) {
+  async function upsert(body, id) {
     const user = {
       name: body.name,
       username: body.username,
     };
-    if (body.id) {
-      user.id = body.id;
+    if (id) {
+      //if has an authenticated account
+      user.id = id;
     } else {
+      //if doesn't has an authenticated account
       user.id = nanoid.nanoid();
     }
     if (body.password || body.username) {
+      //to register process
       await auth.upsert({
         id: user.id,
         username: body.username,
