@@ -1,4 +1,4 @@
 const controller = require("./controller");
-const store = require("../../../store/mysql");
+const Store = require("../../../store/mysql");
 
-module.exports = controller(store);
+module.exports = controller(Store);

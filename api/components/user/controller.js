@@ -8,6 +8,8 @@ module.exports = function (injectedStore) {
   if (!store) {
     store = require("../../../store/dummy.js");
   }
+  console.log("🚀 ~ file: controller.js ~ line 14 ~ list ~ store", store)
+  
   function list() {
     return store.list(TABLE);
   }
